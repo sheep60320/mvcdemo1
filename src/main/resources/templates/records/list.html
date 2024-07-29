@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>list all expenses</h1>
+<table style="border: 1px solid;border-collapse: collapse;">
+    <tr style="border: 1px solid;">
+        <th style="border: 1px solid;">index</th>
+        <th style="border: 1px solid;">count</th>
+        <th style="border: 1px solid;">name</th>
+        <th style="border: 1px solid;">amount</th>
+        <th style="border: 1px solid;">expense date</th>
+        <th style="border: 1px solid;">Delete</th>
+    </tr>
+    <tr th:each="expense,status:${expenses}" style="border: 1px solid;">
+        <td style="border: 1px solid;" th:text="${status.index}"></td>
+        <td style="border: 1px solid;" th:text="${status.count}"></td>
+        <td style="border: 1px solid;" th:text="${expense.name}"></td>
+        <td style="border: 1px solid;" th:text="${expense.amount}"></td>
+        <td style="border: 1px solid;" th:text="${#dates.format(expense.createdAt, 'dd-MMM-yyyy/hh:mm:ss')}"></td>
+        <td><a th:href="@{/records/delete(id=${expense.id})}">Del</a></td>
+    </tr>
+</table>
+</body>
+</html>
