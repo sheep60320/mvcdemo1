@@ -2,6 +2,7 @@ package com.systex.mvcdemo1.controller;
 
 import com.systex.mvcdemo1.controller.form.ExpenseForm;
 import com.systex.mvcdemo1.entity.Expense;
+import com.systex.mvcdemo1.exception.IDNotFoundEception;
 import com.systex.mvcdemo1.repsitory.ExpenseCRUDRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -19,7 +20,7 @@ import java.util.List;
 @Slf4j
 public class ExpenseController {
     private static final String LIST_ALL_EXPENSES = "expenses";
-    private static final String ADD_EXPENSE_FORM = "expenseForm";
+    private static final String ADD_MODIFY_EXPENSE_FORM = "expenseForm";
     @Autowired
     private ExpenseCRUDRepository repository;
 
@@ -34,6 +35,9 @@ public class ExpenseController {
 
     @GetMapping("/records/delete")
     public String delete(@RequestParam Long id) {
+        if (!repository.findById(id).isPresent()) {
+            throw new IDNotFoundEception(id);
+        }
         repository.deleteById(id);
         return "redirect:/records/all";
     }
@@ -41,7 +45,7 @@ public class ExpenseController {
     @GetMapping("/records/add")
     public String showAdd(Model model) {
         ExpenseForm f = new ExpenseForm();
-        model.addAttribute(ADD_EXPENSE_FORM, f);
+        model.addAttribute(ADD_MODIFY_EXPENSE_FORM, f);
         return "records/add";
     }
 
@@ -53,4 +57,29 @@ public class ExpenseController {
         repository.save(e);
         return "redirect:/records/all";
     }
+
+    @GetMapping("/records/modify")
+    public String showModify(@RequestParam Long id, Model model) {
+        if (repository.findById(id).isEmpty()) {
+            throw new IDNotFoundEception(id);
+        }
+        // load data from db
+        Expense expense = repository.findById(id).get();
+        ExpenseForm f = new ExpenseForm();
+        // entity ==> form
+        BeanUtils.copyProperties(expense, f);
+        model.addAttribute(ADD_MODIFY_EXPENSE_FORM, f);
+        return "records/modify";
+    }
+
+    @PostMapping("/records/modify")
+    public String storeModify(ExpenseForm f) {
+        // form==>entity==>db
+        Expense expense = repository.findById(f.getId()).get();
+        BeanUtils.copyProperties(f,expense);
+        repository.save(expense);
+        return "redirect:/records/all";
+    }
+
+
 }

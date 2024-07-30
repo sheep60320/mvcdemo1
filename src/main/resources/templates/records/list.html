@@ -15,6 +15,7 @@
         <th style="border: 1px solid;">amount</th>
         <th style="border: 1px solid;">expense date</th>
         <th style="border: 1px solid;">Delete</th>
+        <th style="border: 1px solid;">Modify</th>
     </tr>
     <tr th:each="expense,status:${expenses}" style="border: 1px solid;">
         <td style="border: 1px solid;" th:text="${status.index}"></td>
@@ -23,6 +24,7 @@
         <td style="border: 1px solid;" th:text="${expense.amount}"></td>
         <td style="border: 1px solid;" th:text="${#dates.format(expense.createdAt, 'dd-MMM-yyyy/hh:mm:ss')}"></td>
         <td><a th:href="@{/records/delete(id=${expense.id})}">Del</a></td>
+        <td><a th:href="@{/records/modify(id=${expense.id})}">Modify</a></td>
     </tr>
 </table>
 </body>
