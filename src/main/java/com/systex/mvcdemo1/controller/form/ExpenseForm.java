@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ExpenseForm {
+    private Long id;
     private String name;
     private int amount;
 }
